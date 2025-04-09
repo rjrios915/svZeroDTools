@@ -14,6 +14,7 @@ def seperatePVLoops(result):
     plt.show()
 
 # Plots ventricle and atrial PV loops
+# Assumes all four chambers are present uses physiological names
 def combinedPVLoops(result):
     a = result.plot(x='Vc:left_atrium',y='pressure:left_atrium:mitral', label="left atrium")
     result.plot(x='Vc:right_atrium',y='pressure:right_atrium:tricuspid',ax=a, label="right atrium")
@@ -37,6 +38,8 @@ def formatData(result):
     flows = [name for name in names if 'flow' in name]
     mask = result['name'].isin(names)
     temp = (result[mask]).pivot(index='time', columns='name', values='y').reset_index()
+
+    # Converts to L and mmHg
     temp[pressures] *= 1/1333
     temp[flows] *= 60/1000
     return temp
